@@ -72,7 +72,7 @@ public final class StateSaver {
             cacheDirPath = context.getCacheDir().getAbsolutePath();
         }
 
-        SubtitleDeduplicator.setCacheDirPathNotDefault(cacheDirPath);
+        SubtitleDeduplicator.setCacheDirPath(cacheDirPath);
     }
 
     /**
