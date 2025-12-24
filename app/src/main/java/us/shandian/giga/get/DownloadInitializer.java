@@ -50,16 +50,16 @@ public class DownloadInitializer extends Thread {
         int retryCount = 0;
         int httpCode = 204;
 
-        //process local, for example: file://
+        //process local file URI (file://)
         for (int i = 0; i < mMission.urls.length && mMission.running; i++) {
             String currentUrl = mMission.urls[i];
 
             if (false == islocalSubtitleUri(currentUrl)) {
                 // do nothing
             } else {
-                int result = handleLocalSubtitle(currentUrl);
+                int result = convertLocalSubtitleFromTtmlToVtt(currentUrl);
                 if (0 == result) {
-                    printLocalSubtitleStoredOk();
+                    printLocalSubtitleConvertedOk();
                 } else {
                     Log.e(TAG, "Fail to handle localSubtitle Url. error=" + result);
                 }
@@ -269,20 +269,20 @@ public class DownloadInitializer extends Thread {
         return absolutePath;
     }
 
-    private int handleLocalSubtitle(String localSubtitleUri) {
+    private int convertLocalSubtitleFromTtmlToVtt(String localSubtitleUri) {
         if (false == LengthOfLocalUriIsValid(localSubtitleUri)) {
             return 3;
         }
 
         String localSubtitlePath = getAbsolutePathFromLocalUri(localSubtitleUri);
-        File file = new File(localSubtitlePath);
+        File localFile = new File(localSubtitlePath);
 
-        int permissionResult = checkLocalFilePermissions(file);
+        int permissionResult = checkLocalFilePermissions(localFile);
         if (permissionResult != 0) {
             return permissionResult;
         }
 
-        extractSubtitleToStorage(file);
+        extractSubtitleFromTtmlToVtt(localFile);
 
         return 0; // Successfully
     }
@@ -297,8 +297,8 @@ public class DownloadInitializer extends Thread {
         return true;
     }
 
-    private int checkLocalFilePermissions(File file) {
-        if (!file.exists()) {
+    private int checkLocalFilePermissions(File localFile) {
+        if (!localFile.exists()) {
             mMission.notifyError(DownloadMission.ERROR_FILE_CREATION, null);
             return 1;
         }
@@ -313,8 +313,8 @@ public class DownloadInitializer extends Thread {
 
     // Extracts subtitle paragraphs(content) from a given local file
     // and writes them to storage.
-    private void extractSubtitleToStorage(File file) {
-        try (FileInputStream inputStream = new FileInputStream(file);
+    private void extractSubtitleFromTtmlToVtt(File localFile) {
+        try (FileInputStream inputStream = new FileInputStream(localFile);
              SharpStream outputStream = mMission.storage.getStream()) {
 
             byte[] buffer = new byte[DownloadMission.BUFFER_SIZE];
@@ -333,16 +333,16 @@ public class DownloadInitializer extends Thread {
 
         } catch (IOException e) {
             String logMessage = "Error extracting subtitle paragraphs from " +
-                                    file.getAbsolutePath() + ", error:" +
+                                    localFile.getAbsolutePath() + ", error:" +
                                     e.getMessage();
             Log.e(TAG, logMessage);
             mMission.notifyError(DownloadMission.ERROR_FILE_CREATION, e);
         }
     }
 
-    private void printLocalSubtitleStoredOk() {
+    private void printLocalSubtitleConvertedOk() {
         try {
-            String logMessage = "Local subtitle url is extracted to:" +
+            String logMessage = "Local subtitle uri is extracted to:" +
                                 mMission.storage.getName();
             Log.i(TAG, logMessage);
         } catch (NullPointerException e) {
