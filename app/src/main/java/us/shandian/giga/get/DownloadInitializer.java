@@ -242,25 +242,23 @@ public class DownloadInitializer extends Thread {
         }
     }
 
-    private boolean isSubtitleUrl() {
+    private boolean downloadMissionIsForSubtitle() {
         char downloadKind = mMission.kind;
-        if ('s' != downloadKind) {
-            return false;
+        if ('s' == downloadKind) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private boolean islocalSubtitleUri(String url) {
-        if (false == isLocalUri(url)) {
-            return false;
+        if (true == downloadMissionIsForSubtitle()) {
+            if (true == isLocalUri(url)) {
+                return true;
+            }
         }
 
-        if (false == isSubtitleUrl()) {
-            return false;
-        }
-
-        return true;
+        return false;
     }
 
     private String getAbsolutePathFromlocalUri(String localSubtitleUri) {
