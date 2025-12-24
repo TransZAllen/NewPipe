@@ -54,7 +54,7 @@ public class DownloadInitializer extends Thread {
         for (int i = 0; i < mMission.urls.length && mMission.running; i++) {
             String currentUrl = mMission.urls[i];
 
-            if (false == isLocalSubtitleUrl(currentUrl)) {
+            if (false == islocalSubtitleUri(currentUrl)) {
                 // do nothing
             } else {
                 int result = handleLocalSubtitle(currentUrl);
@@ -232,7 +232,7 @@ public class DownloadInitializer extends Thread {
         if (mConn != null) dispose();
     }
 
-    private boolean isLocalUrl(String url) {
+    private boolean isLocalUri(String url) {
         String URL_PREFIX = SubtitleDeduplicator.LOCAL_SUBTITLE_URL_PREFIX;
 
         if (url.startsWith(URL_PREFIX)) {
@@ -251,8 +251,8 @@ public class DownloadInitializer extends Thread {
         return true;
     }
 
-    private boolean isLocalSubtitleUrl(String url) {
-        if (false == isLocalUrl(url)) {
+    private boolean islocalSubtitleUri(String url) {
+        if (false == isLocalUri(url)) {
             return false;
         }
 
@@ -263,20 +263,20 @@ public class DownloadInitializer extends Thread {
         return true;
     }
 
-    private String getAbsolutePathFromLocalUrl(String localSubtitleUrl) {
+    private String getAbsolutePathFromlocalUri(String localSubtitleUri) {
         String URL_PREFIX = SubtitleDeduplicator.LOCAL_SUBTITLE_URL_PREFIX;
         int prefixLength = URL_PREFIX.length();
         // Remove URL_PREFIX
-        String absolutePath = localSubtitleUrl.substring(prefixLength);
+        String absolutePath = localSubtitleUri.substring(prefixLength);
         return absolutePath;
     }
 
-    private int handleLocalSubtitle(String localSubtitleUrl) {
-        if (false == isValidLocalUrlLength(localSubtitleUrl)) {
+    private int handleLocalSubtitle(String localSubtitleUri) {
+        if (false == isValidLocalUriLength(localSubtitleUri)) {
             return 3;
         }
 
-        String localSubtitlePath = getAbsolutePathFromLocalUrl(localSubtitleUrl);
+        String localSubtitlePath = getAbsolutePathFromlocalUri(localSubtitleUri);
         File file = new File(localSubtitlePath);
 
         int permissionResult = checkLocalFilePermissions(file);
@@ -289,10 +289,10 @@ public class DownloadInitializer extends Thread {
         return 0; // Successfully
     }
 
-    private boolean isValidLocalUrlLength(String localUrl) {
+    private boolean isValidLocalUriLength(String localUri) {
         String URL_PREFIX = SubtitleDeduplicator.LOCAL_SUBTITLE_URL_PREFIX;
 
-        if (localUrl.length() <= URL_PREFIX.length()) {
+        if (localUri.length() <= URL_PREFIX.length()) {
              return false;
         }
 
