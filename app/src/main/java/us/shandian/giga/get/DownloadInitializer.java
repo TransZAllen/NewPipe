@@ -261,7 +261,7 @@ public class DownloadInitializer extends Thread {
         return false;
     }
 
-    private String getAbsolutePathFromlocalUri(String localSubtitleUri) {
+    private String getAbsolutePathFromLocalUri(String localSubtitleUri) {
         String URL_PREFIX = SubtitleDeduplicator.LOCAL_SUBTITLE_URL_PREFIX;
         int prefixLength = URL_PREFIX.length();
         // Remove URL_PREFIX
@@ -274,7 +274,7 @@ public class DownloadInitializer extends Thread {
             return 3;
         }
 
-        String localSubtitlePath = getAbsolutePathFromlocalUri(localSubtitleUri);
+        String localSubtitlePath = getAbsolutePathFromLocalUri(localSubtitleUri);
         File file = new File(localSubtitlePath);
 
         int permissionResult = checkLocalFilePermissions(file);
