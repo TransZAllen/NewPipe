@@ -272,7 +272,7 @@ public class DownloadInitializer extends Thread {
     }
 
     private int handleLocalSubtitle(String localSubtitleUri) {
-        if (false == isValidLocalUriLength(localSubtitleUri)) {
+        if (false == LengthOfLocalUriIsValid(localSubtitleUri)) {
             return 3;
         }
 
@@ -289,7 +289,7 @@ public class DownloadInitializer extends Thread {
         return 0; // Successfully
     }
 
-    private boolean isValidLocalUriLength(String localUri) {
+    private boolean LengthOfLocalUriIsValid(String localUri) {
         String URL_PREFIX = SubtitleDeduplicator.LOCAL_SUBTITLE_URL_PREFIX;
 
         if (localUri.length() <= URL_PREFIX.length()) {
