@@ -242,7 +242,7 @@ public class DownloadInitializer extends Thread {
         }
     }
 
-    private boolean downloadMissionIsForSubtitle() {
+    private boolean isSubtitleDownloadMission() {
         char downloadKind = mMission.kind;
         if ('s' == downloadKind) {
             return true;
@@ -252,7 +252,7 @@ public class DownloadInitializer extends Thread {
     }
 
     private boolean islocalSubtitleUri(String url) {
-        if (true == downloadMissionIsForSubtitle()) {
+        if (true == isSubtitleDownloadMission()) {
             if (true == isLocalUri(url)) {
                 return true;
             }
@@ -270,7 +270,7 @@ public class DownloadInitializer extends Thread {
     }
 
     private int convertLocalSubtitleFromTtmlToVtt(String localSubtitleUri) {
-        if (false == LengthOfLocalUriIsValid(localSubtitleUri)) {
+        if (false == isValidLocalUri(localSubtitleUri)) {
             return 3;
         }
 
@@ -287,7 +287,7 @@ public class DownloadInitializer extends Thread {
         return 0; // Successfully
     }
 
-    private boolean LengthOfLocalUriIsValid(String localUri) {
+    private boolean isValidLocalUri(String localUri) {
         String URL_PREFIX = SubtitleDeduplicator.LOCAL_SUBTITLE_URL_PREFIX;
 
         if (localUri.length() <= URL_PREFIX.length()) {
