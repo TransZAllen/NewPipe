@@ -54,18 +54,14 @@ public class DownloadInitializer extends Thread {
         for (int i = 0; i < mMission.urls.length && mMission.running; i++) {
             String currentUrl = mMission.urls[i];
 
-            if (false == islocalSubtitleUri(currentUrl)) {
-                // do nothing
-            } else {
-                int result = convertLocalSubtitleFromTtmlToVtt(currentUrl);
-                if (0 == result) {
-                    printLocalSubtitleConvertedOk();
-                } else {
-                    Log.e(TAG, "Fail to handle localSubtitle Url. error=" + result);
-                }
+            if (true == islocalSubtitleUri(currentUrl)) {
+                LocalSubtitleConverter.convertTtmlToVtt(currentUrl, mMission);
 
-                // There is only urls[0] for subtitle,
-                // so return directly after processing the urls[0].
+                // Subtitle download missions always contain exactly one URL.
+                // Once the local subtitle is converted, the mission is
+                // considered finished.
+                // Do not replace this with `continue` unless subtitle missions
+                // support multiple URLs in the future.
                 return;
             }
         }
@@ -261,92 +257,4 @@ public class DownloadInitializer extends Thread {
         return false;
     }
 
-    private String getAbsolutePathFromLocalUri(String localSubtitleUri) {
-        String URL_PREFIX = SubtitleDeduplicator.LOCAL_SUBTITLE_URL_PREFIX;
-        int prefixLength = URL_PREFIX.length();
-        // Remove URL_PREFIX
-        String absolutePath = localSubtitleUri.substring(prefixLength);
-        return absolutePath;
-    }
-
-    private int convertLocalSubtitleFromTtmlToVtt(String localSubtitleUri) {
-        if (false == isValidLocalUri(localSubtitleUri)) {
-            return 3;
-        }
-
-        String localSubtitlePath = getAbsolutePathFromLocalUri(localSubtitleUri);
-        File localFile = new File(localSubtitlePath);
-
-        int permissionResult = checkLocalFilePermissions(localFile);
-        if (permissionResult != 0) {
-            return permissionResult;
-        }
-
-        extractSubtitleFromTtmlToVtt(localFile);
-
-        return 0; // Successfully
-    }
-
-    private boolean isValidLocalUri(String localUri) {
-        String URL_PREFIX = SubtitleDeduplicator.LOCAL_SUBTITLE_URL_PREFIX;
-
-        if (localUri.length() <= URL_PREFIX.length()) {
-             return false;
-        }
-
-        return true;
-    }
-
-    private int checkLocalFilePermissions(File localFile) {
-        if (!localFile.exists()) {
-            mMission.notifyError(DownloadMission.ERROR_FILE_CREATION, null);
-            return 1;
-        }
-
-        if (!mMission.storage.canWrite()) {
-            mMission.notifyError(DownloadMission.ERROR_PERMISSION_DENIED, null);
-            return 2;
-        }
-
-        return 0;
-    }
-
-    // Extracts subtitle paragraphs(content) from a given local file
-    // and writes them to storage.
-    private void extractSubtitleFromTtmlToVtt(File localFile) {
-        try (FileInputStream inputStream = new FileInputStream(localFile);
-             SharpStream outputStream = mMission.storage.getStream()) {
-
-            byte[] buffer = new byte[DownloadMission.BUFFER_SIZE];
-            int bytesRead;
-            long totalBytes = 0;
-
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-                totalBytes += bytesRead;
-                mMission.notifyProgress(bytesRead);
-            }
-
-            mMission.length = totalBytes;
-            mMission.unknownLength = false;
-            mMission.notifyFinished();
-
-        } catch (IOException e) {
-            String logMessage = "Error extracting subtitle paragraphs from " +
-                                    localFile.getAbsolutePath() + ", error:" +
-                                    e.getMessage();
-            Log.e(TAG, logMessage);
-            mMission.notifyError(DownloadMission.ERROR_FILE_CREATION, e);
-        }
-    }
-
-    private void printLocalSubtitleConvertedOk() {
-        try {
-            String logMessage = "Local subtitle uri is extracted to:" +
-                                mMission.storage.getName();
-            Log.i(TAG, logMessage);
-        } catch (NullPointerException e) {
-            Log.w(TAG, "Please check whether the subtitle file is downloaded.", e);
-        }
-    }
 }
