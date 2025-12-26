@@ -21,17 +21,18 @@ final class LocalSubtitleConverter {
 
     /**
      * Converts a local TTML subtitle file (file://) into VTT format
-     * and stores it in the app's subtitle cache directory.
+     * and stores it in the user-defined/chosen directory.
      *
      * @param localSubtitleUri file:// URI of the local TTML subtitle
-     * @param mission current download mission
+     * @param subtitleMission current download mission, and it is a command
+     *                initiated manually by the user (via a button).
      * @return 0 if success, non-zero error code otherwise
      */
     public static int convertLocalTtmlToVtt(String localSubtitleUri,
-                                       DownloadMission mission) {
+                                       DownloadMission subtitleMission) {
 
         if (!isValidLocalUri(localSubtitleUri)) {
-            return 3;
+            return 1;
         }
 
         File ttmlFile = new File(
@@ -39,47 +40,22 @@ final class LocalSubtitleConverter {
         );
 
         if (!ttmlFile.exists()) {
-            mission.notifyError(DownloadMission.ERROR_FILE_CREATION, null);
-            return 4;
+            subtitleMission.notifyError(DownloadMission.ERROR_FILE_CREATION, null);
+            return 2;
         }
 
-        if (!mission.storage.canWrite()) {
-            mission.notifyError(DownloadMission.ERROR_PERMISSION_DENIED, null);
-            return 5;
+        if (!subtitleMission.storage.canWrite()) {
+            subtitleMission.notifyError(DownloadMission.ERROR_PERMISSION_DENIED, null);
+            return 3;
         }
 
-        extractSubtitleFromTtmlToVtt(ttmlFile, mission);
-        /*
-        // 1. Read TTML
-        String ttmlContent = readSubtitleFile(ttmlFile);
-        if (ttmlContent == null) {
-            return 5;
-        }
+        extractSubtitleFromTtmlToVtt(ttmlFile, subtitleMission);
 
-        // 2. Deduplicate / normalize
-        String vttContent = SubtitleDeduplicator
-                .convertTtmlContentToVtt(ttmlContent);
-
-        if (vttContent == null) {
-            return 6;
-        }
-
-        // 3. Store VTT to cache
-        File vttFile = storeVttToCache(vttContent, mission);
-
-        if (vttFile == null) {
-            return 7;
-        }
-
-        printLocalSubtitleConvertedOk(vttFile);
-        */
-
-        printLocalSubtitleConvertedOk(mission);
+        printLocalSubtitleConvertedOk(subtitleMission);
 
         return 0;
     }
 
-    /* -------- private helpers -------- */
 
     private static boolean isValidLocalUri(String localUri) {
         String URL_PREFIX = SubtitleDeduplicator.LOCAL_SUBTITLE_URL_PREFIX;
@@ -98,9 +74,6 @@ final class LocalSubtitleConverter {
         String absolutePath = localSubtitleUri.substring(prefixLength);
         return absolutePath;
     }
-
-    // readSubtitleFile(...)
-    // storeVttToCache(...)
 
     private static void extractSubtitleFromTtmlToVtt(File localFile,
                                               DownloadMission mission) {
