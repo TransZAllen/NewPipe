@@ -20,7 +20,7 @@ final class LocalSubtitleConverter {
     }
 
     /**
-     * Converts a local TTML subtitle file (file://) into VTT format
+     * Converts a local(file://) TTML subtitle file into VTT format
      * and stores it in the user-defined/chosen directory.
      *
      * @param localSubtitleUri file:// URI of the local TTML subtitle
@@ -49,7 +49,7 @@ final class LocalSubtitleConverter {
             return 3;
         }
 
-        extractSubtitleFromTtmlToVtt(ttmlFile, subtitleMission);
+        writeLocalTtmlAsVtt(ttmlFile, subtitleMission);
 
         printLocalSubtitleConvertedOk(subtitleMission);
 
@@ -75,17 +75,17 @@ final class LocalSubtitleConverter {
         return absolutePath;
     }
 
-    private static void extractSubtitleFromTtmlToVtt(File localFile,
-                                              DownloadMission mission) {
-        try (FileInputStream inputStream = new FileInputStream(localFile);
-             SharpStream outputStream = mission.storage.getStream()) {
+    private static void writeLocalTtmlAsVtt(File localTtmlFile,
+                                            DownloadMission mission) {
+        try (FileInputStream inputTtmlStream = new FileInputStream(localTtmlFile);
+             SharpStream outputVttStream = mission.storage.getStream()) {
 
             byte[] buffer = new byte[DownloadMission.BUFFER_SIZE];
             int bytesRead;
             long totalBytes = 0;
 
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
+            while ((bytesRead = inputTtmlStream.read(buffer)) != -1) {
+                outputVttStream.write(buffer, 0, bytesRead);
                 totalBytes += bytesRead;
                 mission.notifyProgress(bytesRead);
             }
@@ -96,8 +96,8 @@ final class LocalSubtitleConverter {
 
         } catch (IOException e) {
             String logMessage = "Error extracting subtitle paragraphs from " +
-                                    localFile.getAbsolutePath() + ", error:" +
-                                    e.getMessage();
+                                localTtmlFile.getAbsolutePath() + ", error:" +
+                                e.getMessage();
             Log.e(TAG, logMessage);
             mission.notifyError(DownloadMission.ERROR_FILE_CREATION, e);
         }
