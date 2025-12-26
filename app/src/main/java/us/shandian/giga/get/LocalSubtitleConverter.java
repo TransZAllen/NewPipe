@@ -27,7 +27,7 @@ final class LocalSubtitleConverter {
      * @param mission current download mission
      * @return 0 if success, non-zero error code otherwise
      */
-    public static int convertTtmlToVtt(String localSubtitleUri,
+    public static int convertLocalTtmlToVtt(String localSubtitleUri,
                                        DownloadMission mission) {
 
         if (!isValidLocalUri(localSubtitleUri)) {

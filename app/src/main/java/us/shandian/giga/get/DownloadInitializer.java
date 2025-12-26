@@ -55,7 +55,7 @@ public class DownloadInitializer extends Thread {
             String currentUrl = mMission.urls[i];
 
             if (true == islocalSubtitleUri(currentUrl)) {
-                LocalSubtitleConverter.convertTtmlToVtt(currentUrl, mMission);
+                LocalSubtitleConverter.convertLocalTtmlToVtt(currentUrl, mMission);
 
                 // Subtitle download missions always contain exactly one URL.
                 // Once the local subtitle is converted, the mission is
