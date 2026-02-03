@@ -11,8 +11,8 @@ public class SubtitleDeduplicatorTest {
     @Test
     public void deduplicateExactDuplicateEntriesShouldRemoveDuplicate() {
         final String input =
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n" +
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>";
+            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n"
+            + "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>";
 
         final String output = SubtitleDeduplicator.deduplicateContent(input);
 
@@ -29,8 +29,8 @@ public class SubtitleDeduplicatorTest {
     @Test
     public void deduplicateSameTimeDifferentTextShouldNotDeduplicate() {
         final String input =
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n" +
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">World</p>";
+            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n"
+            + "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">World</p>";
 
         final String output = SubtitleDeduplicator.deduplicateContent(input);
 
@@ -42,8 +42,8 @@ public class SubtitleDeduplicatorTest {
     @Test
     public void deduplicateSameTextDifferentTimeShouldNotDeduplicate() {
         final String input =
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n" +
-            "<p begin=\"00:00:02.000\" end=\"00:00:03.000\">Hello</p>";
+            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n"
+            + "<p begin=\"00:00:02.000\" end=\"00:00:03.000\">Hello</p>";
 
         final String output = SubtitleDeduplicator.deduplicateContent(input);
 
@@ -55,8 +55,8 @@ public class SubtitleDeduplicatorTest {
     @Test
     public void containsDuplicatedEntriesExactDuplicateShouldReturnTrue() {
         final String input =
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n" +
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>";
+            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n"
+            + "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>";
 
         assertTrue(SubtitleDeduplicator.containsDuplicatedEntries(input));
     }
@@ -64,8 +64,8 @@ public class SubtitleDeduplicatorTest {
     @Test
     public void containsDuplicatedEntriesNoDuplicateShouldReturnFalse() {
         final String input =
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n" +
-            "<p begin=\"00:00:02.000\" end=\"00:00:03.000\">World</p>";
+            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n"
+            + "<p begin=\"00:00:02.000\" end=\"00:00:03.000\">World</p>";
 
         assertFalse(SubtitleDeduplicator.containsDuplicatedEntries(input));
     }
@@ -78,8 +78,8 @@ public class SubtitleDeduplicatorTest {
         // as the same after this normalization, without modifying
         // the original subtitle content.
         final String input =
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">  Hello world  </p>\n" +
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello world</p>";
+            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">  Hello world  </p>\n"
+            + "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello world</p>";
         assertTrue(SubtitleDeduplicator.containsDuplicatedEntries(input));
     }
 
@@ -91,8 +91,8 @@ public class SubtitleDeduplicatorTest {
         // considering the content as the same after this normalization,
         // without modifying the original subtitle content.
         final String input =
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello    world</p>\n" +
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello world</p>";
+            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello    world</p>\n"
+            + "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello world</p>";
         assertTrue(SubtitleDeduplicator.containsDuplicatedEntries(input));
     }
 }
