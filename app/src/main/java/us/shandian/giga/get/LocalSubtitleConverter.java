@@ -9,7 +9,7 @@ import android.util.Log;
 
 import org.schabi.newpipe.streams.io.SharpStream;
 
-import org.schabi.newpipe.extractor.utils.SubtitleDeduplicator;
+import org.schabi.newpipe.player.subtitles.SubtitleDeduplicator;
 
 final class LocalSubtitleConverter {
 
