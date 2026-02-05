@@ -31,7 +31,7 @@ import androidx.core.os.BundleCompat;
 
 import org.schabi.newpipe.BuildConfig;
 import org.schabi.newpipe.MainActivity;
-import org.schabi.newpipe.extractor.utils.SubtitleDeduplicator;
+import org.schabi.newpipe.player.subtitles.SubtitleDeduplicator;
 
 import java.io.File;
 import java.io.FileInputStream;
