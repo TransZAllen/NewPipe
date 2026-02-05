@@ -17,6 +17,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import androidx.annotation.NonNull;
 
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
@@ -73,6 +76,13 @@ public final class SubtitleDeduplicator {
     public static String checkAndDeduplicate(final String remoteSubtitleUrl,
                                              final MediaFormat format,
                                              final SubtitleOrigin currentSubtitleOrigin) {
+        // Subtitle deduplication relies on YouTube-specific subtitle URL semantics
+        // (videoId, languageCode, translationCode) which are used for cache file naming.
+        // For non-YouTube URLs, the original subtitle is returned unchanged.
+        if (!isYoutubeRelatedUrl(remoteSubtitleUrl)) {
+            return remoteSubtitleUrl;
+        }
+
         if (!isCacheDirAvailable()) {
             printCacheDirNotInitialized();
             return remoteSubtitleUrl;
@@ -489,6 +499,16 @@ public final class SubtitleDeduplicator {
     // for use in generating unique filenames.
     private static String getVideoId(final String remoteSubtitleUrl) {
         return YoutubeParsingHelper.extractVideoId(remoteSubtitleUrl);
+    }
+
+    private static boolean isYoutubeRelatedUrl(@NonNull final String url) {
+        try {
+            final URL parsedUrl = new URL(url);
+            return (YoutubeParsingHelper.isYoutubeURL(parsedUrl)
+                    || YoutubeParsingHelper.isYoutubeServiceURL(parsedUrl));
+        } catch (final MalformedURLException e) {
+            return false;
+        }
     }
 
     private static File getCacheFile(final String subtitleUrl,
