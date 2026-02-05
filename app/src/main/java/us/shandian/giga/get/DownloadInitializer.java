@@ -19,7 +19,7 @@ import us.shandian.giga.util.Utility;
 
 import static org.schabi.newpipe.BuildConfig.DEBUG;
 import static us.shandian.giga.get.DownloadMission.ERROR_HTTP_FORBIDDEN;
-import org.schabi.newpipe.extractor.utils.SubtitleDeduplicator;
+import org.schabi.newpipe.player.subtitles.SubtitleDeduplicator;
 
 public class DownloadInitializer extends Thread {
     private static final String TAG = "DownloadInitializer";
