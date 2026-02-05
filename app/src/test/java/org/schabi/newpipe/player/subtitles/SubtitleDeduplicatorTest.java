@@ -9,7 +9,7 @@ import static org.junit.Assert.assertFalse;
 public class SubtitleDeduplicatorTest {
 
     @Test
-    public void deduplicate_exactDuplicateEntries_shouldRemoveDuplicate() {
+    public void deduplicateExactDuplicateEntriesShouldRemoveDuplicate() {
         String input =
             "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n" +
             "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>";
@@ -27,7 +27,7 @@ public class SubtitleDeduplicatorTest {
     }
 
     @Test
-    public void deduplicate_sameTimeDifferentText_shouldNotDeduplicate() {
+    public void deduplicateSameTimeDifferentTextShouldNotDeduplicate() {
         String input =
             "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n" +
             "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">World</p>";
@@ -40,7 +40,7 @@ public class SubtitleDeduplicatorTest {
     }
 
     @Test
-    public void deduplicate_sameTextDifferentTime_shouldNotDeduplicate() {
+    public void deduplicateSameTextDifferentTimeShouldNotDeduplicate() {
         String input =
             "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n" +
             "<p begin=\"00:00:02.000\" end=\"00:00:03.000\">Hello</p>";
@@ -53,7 +53,7 @@ public class SubtitleDeduplicatorTest {
     }
 
     @Test
-    public void containsDuplicatedEntries_exactDuplicate_shouldReturnTrue() {
+    public void containsDuplicatedEntriesExactDuplicateShouldReturnTrue() {
         String input =
             "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n" +
             "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>";
@@ -62,7 +62,7 @@ public class SubtitleDeduplicatorTest {
     }
 
     @Test
-    public void containsDuplicatedEntries_noDuplicate_shouldReturnFalse() {
+    public void containsDuplicatedEntriesNoDuplicateShouldReturnFalse() {
         String input =
             "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello</p>\n" +
             "<p begin=\"00:00:02.000\" end=\"00:00:03.000\">World</p>";
@@ -71,7 +71,7 @@ public class SubtitleDeduplicatorTest {
     }
 
     @Test
-    public void containsDuplicatedEntries_normalizeLeadingAndTrailingWhitespace_shouldConsiderAsSame() {
+    public void containsDuplicatedEntriesNormalizeLeadingAndTrailingWhitespaceShouldConsiderAsSame() {
         // Note:
         // This test verifies that the deduplication logic normalizes
         // leading and trailing whitespace, and considers the content
@@ -84,7 +84,7 @@ public class SubtitleDeduplicatorTest {
     }
 
     @Test
-    public void containsDuplicatedEntries_normalizeMultipleSpaces_shouldConsiderAsSingleSpace() {
+    public void containsDuplicatedEntriesNormalizeMultipleSpacesShouldConsiderAsSingleSpace() {
         // Note:
         // This test verifies that the deduplication logic normalizes
         // multiple consecutive spaces into a single space,
