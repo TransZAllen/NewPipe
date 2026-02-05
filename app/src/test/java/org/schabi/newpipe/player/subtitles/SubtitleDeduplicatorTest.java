@@ -71,7 +71,7 @@ public class SubtitleDeduplicatorTest {
     }
 
     @Test
-    public void containsDuplicatedEntriesNormalizeLeadingAndTrailingWhitespaceShouldConsiderAsSame() {
+    public void containsDuplicatesNormalizeLeadingAndTrailingWhitespaceShouldConsiderAsSame() {
         // Note:
         // This test verifies that the deduplication logic normalizes
         // leading and trailing whitespace, and considers the content
