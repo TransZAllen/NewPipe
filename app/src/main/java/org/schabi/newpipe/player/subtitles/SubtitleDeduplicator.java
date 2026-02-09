@@ -22,6 +22,8 @@ import java.net.URL;
 
 import androidx.annotation.NonNull;
 
+import android.util.Log;
+
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -164,7 +166,7 @@ public final class SubtitleDeduplicator {
               + "Fallback to original subtitle without deduplication. "
               + "setCacheDirPath() should be called before using this class.";
 
-        System.err.println(TAG + ": " + errorMessage);
+        Log.w(TAG, errorMessage);
     }
 
     private static String downloadRemoteSubtitleContent(final String urlStr,
@@ -173,7 +175,7 @@ public final class SubtitleDeduplicator {
                                                         final int initialDelayMillis) {
         final Downloader downloader = NewPipe.getDownloader();
         if (downloader == null) {
-            System.err.println(TAG + ": Downloader not initialized");
+            Log.w(TAG, "Downloader not initialized- cannot download subtitles");
             return null;
         }
         // if auto-translate language subtitle, use the bigger data.
@@ -187,18 +189,14 @@ public final class SubtitleDeduplicator {
                 if (response.responseCode() == 200) {
                     return response.responseBody();
                 } else {
-                    System.err.println(TAG + ": Attempt " + attempt
-                                        + " failed with status: "
-                                        + response.responseCode()
-                                        + " URL: " + urlStr);
+                    Log.w(TAG, "Attempt " + attempt + " failed with status: "
+                                + response.responseCode() + " URL: " + urlStr);
                     if (response.responseCode() != 503 && response.responseCode() != 429) {
                         return null;
                     }
                 }
             } catch (IOException | ReCaptchaException e) {
-                System.err.println(TAG + ": Attempt " + attempt
-                                    + " failed: " + e.getMessage()
-                                    + " URL: " + urlStr);
+                Log.w(TAG, "Attempt " + attempt + " failed for URL: " + urlStr, e);
             }
             if (attempt < maxRetries) {
                 try {
@@ -210,8 +208,8 @@ public final class SubtitleDeduplicator {
                 }
             }
         }
-        System.err.println(TAG + ": Failed to download subtitle after "
-                            + maxRetries + " URL: " + urlStr);
+        Log.e(TAG, "Failed to download subtitle after " + maxRetries
+                    + " attempts. URL: " + urlStr);
         return null;
     }
 
@@ -402,8 +400,7 @@ public final class SubtitleDeduplicator {
         if (null == writeDeduplicatedContentToCachefile(subtitleContent, cacheFile)) {
             return cacheFilePathForExoplayer;
         } else {
-            System.err.println(TAG + ": Failed to write cache file: "
-                                + cacheFile.getAbsolutePath());
+            Log.e(TAG, "Failed to write cache file: " + cacheFile.getAbsolutePath());
             return null;
         }
     }
@@ -599,9 +596,8 @@ public final class SubtitleDeduplicator {
             //ok
             return null;
         } catch (final IOException e) {
-            final String errorMessage = e.getMessage();
-            System.err.println(TAG + ": Failed to write cache file: " + errorMessage);
-            return errorMessage;
+            Log.e(TAG, "Failed to write cache file", e);
+            return e.getMessage();
         }
     }
 
