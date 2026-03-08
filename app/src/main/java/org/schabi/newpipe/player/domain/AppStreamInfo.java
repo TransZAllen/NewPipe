@@ -21,25 +21,14 @@ public final class AppStreamInfo {
     @NonNull
     private final StreamInfo originalStreamInfo;
 
-    @NonNull
-    private final List<SubtitlesStream> normalizedSubtitles;
-
-    private AppStreamInfo(@NonNull final StreamInfo original,
-                          @NonNull final List<SubtitlesStream> newSubtitles) {
+    private AppStreamInfo(@NonNull final StreamInfo original) {
         this.originalStreamInfo = original;
-        this.normalizedSubtitles = newSubtitles;
     }
 
     // Factory method: build AppStreamInfo from raw StreamInfo.
-    // Subtitle normalization happens HERE and only HERE.
     @NonNull
     public static AppStreamInfo from(@NonNull final StreamInfo info) {
-        final List<SubtitlesStream> originalSubtitles = info.getSubtitles();
-
-        final List<SubtitlesStream> newSubtitles =
-                    deduplicateSubtitles(originalSubtitles);
-
-        return new AppStreamInfo(info, newSubtitles);
+        return new AppStreamInfo(info);
     }
 
     @NonNull
@@ -48,8 +37,14 @@ public final class AppStreamInfo {
     }
 
     @NonNull
-    public List<SubtitlesStream> getSubtitles() {
-        return normalizedSubtitles;
+    public List<SubtitlesStream> getNormalizedSubtitles() {
+        final List<SubtitlesStream> originalSubtitles =
+                    originalStreamInfo.getSubtitles();
+
+        final List<SubtitlesStream> newSubtitles =
+                    deduplicateSubtitles(originalSubtitles);
+
+        return newSubtitles;
     }
 
     @NonNull
