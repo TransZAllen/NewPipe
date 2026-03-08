@@ -20,6 +20,8 @@ public final class AppStreamInfo {
 
     @NonNull
     private final StreamInfo originalStreamInfo;
+    @Nullable
+    private List<SubtitlesStream> normalizedSubtitles = null;
 
     private AppStreamInfo(@NonNull final StreamInfo original) {
         this.originalStreamInfo = original;
@@ -37,14 +39,16 @@ public final class AppStreamInfo {
     }
 
     @NonNull
-    public List<SubtitlesStream> getNormalizedSubtitles() {
-        final List<SubtitlesStream> originalSubtitles =
+    public List<SubtitlesStream> loadNormalizedSubtitles() {
+        if (null == normalizedSubtitles) {
+            final List<SubtitlesStream> originalSubtitles =
                     originalStreamInfo.getSubtitles();
 
-        final List<SubtitlesStream> newSubtitles =
+            normalizedSubtitles =
                     deduplicateSubtitles(originalSubtitles);
+        }
 
-        return newSubtitles;
+        return normalizedSubtitles;
     }
 
     @NonNull
