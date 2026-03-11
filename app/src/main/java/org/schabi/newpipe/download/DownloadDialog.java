@@ -71,7 +71,6 @@ import org.schabi.newpipe.util.SimpleOnSeekBarChangeListener;
 import org.schabi.newpipe.util.StreamItemAdapter;
 import org.schabi.newpipe.util.StreamItemAdapter.StreamInfoWrapper;
 import org.schabi.newpipe.util.ThemeHelper;
-import org.schabi.newpipe.player.domain.AppStreamInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -184,11 +183,8 @@ public class DownloadDialog extends DialogFragment
         );
 
         this.wrappedVideoStreams = new StreamInfoWrapper<>(videoStreams, context);
-
-        final AppStreamInfo appInfo = AppStreamInfo.from(info);
-        final List<SubtitlesStream> subtitlesStreams = appInfo.loadNormalizedSubtitles();
         this.wrappedSubtitleStreams = new StreamInfoWrapper<>(
-                getStreamsOfSpecifiedDelivery(subtitlesStreams, PROGRESSIVE_HTTP), context);
+                getStreamsOfSpecifiedDelivery(info.getSubtitles(), PROGRESSIVE_HTTP), context);
 
         this.selectedVideoIndex = ListHelper.getDefaultResolutionIndex(context, videoStreams);
     }
