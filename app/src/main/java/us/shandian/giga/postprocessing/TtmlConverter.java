@@ -63,6 +63,19 @@ class TtmlConverter extends Postprocessing {
 
         int read;
 
+        // Note: `> 0` is required here because ChunkFileInputStream.read()
+        // returns 0 at EOF instead of -1. Using `!= -1` would result in
+        // an infinite loop in that case.
+        //
+        // Standard Java InputStream.read() returns -1 at EOF.
+        //
+        // Reference implementation:
+        // - ChunkFileInputStream.java
+        //
+        // Future note:
+        // - If ChunkFileInputStream changes to return -1 at EOF, this loop
+        //   can safely be switched back to `read != -1`. Keeping `> 0` is
+        //   also safe and will continue to work.
         while ((read = stream.read(buffer)) > 0) {
             out.write(buffer, 0, read);
         }
