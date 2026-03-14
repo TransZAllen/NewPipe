@@ -42,6 +42,10 @@ public final class CacheDirUtils {
      * - Internal: /data/user/0/<package_name>/cache/
      *             (or /data/data/<package_name>/cache/ on some devices)
      *
+     * Note: The 'external' and 'internal' cache directories mentioned above
+     * are Android terms. They are typically located on the device's
+     * built-in storage and are not related to removable SD/TF cards.
+     *
      * User "Clear Cache" in app settings deletes files in both locations.
      *
      * @param context used to get the available cache dir
