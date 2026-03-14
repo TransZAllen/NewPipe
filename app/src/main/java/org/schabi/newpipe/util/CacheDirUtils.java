@@ -11,7 +11,7 @@ public final class CacheDirUtils {
         // no instance
     }
 
-    public static String getExternalAppCacheDir(
+    public static String getExternalAppCacheDirPath(
                                 @NonNull final Context context) {
         final File externalCacheDir = context.getExternalCacheDir();
         if (null != externalCacheDir) {
@@ -44,7 +44,7 @@ public final class CacheDirUtils {
     public static String getPreferredAppCacheDirPath(
                                 @NonNull final Context context) {
 
-        final String externalCacheDirPath = getExternalAppCacheDir(context);
+        final String externalCacheDirPath = getExternalAppCacheDirPath(context);
         if (null != externalCacheDirPath) {
             return externalCacheDirPath;
         }
