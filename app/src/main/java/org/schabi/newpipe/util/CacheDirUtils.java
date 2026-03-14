@@ -22,6 +22,13 @@ public final class CacheDirUtils {
         return null;
     }
 
+    public static String getInternalAppCacheDirPath(
+                                @NonNull final Context context) {
+        // always available, never be 'null'
+        // /data/user/0/<package_name>/cache/
+        return context.getCacheDir().getAbsolutePath();
+    }
+
     /**
      * Returns the preferred cache directory path for the application.
      *
@@ -50,6 +57,6 @@ public final class CacheDirUtils {
         }
 
         // Internal cache dir should always be available
-        return context.getCacheDir().getAbsolutePath();
+        return getInternalAppCacheDirPath(context);
     }
 }
