@@ -24,10 +24,12 @@ import org.schabi.newpipe.util.BridgeStateSaverInitializer;
 import org.schabi.newpipe.util.Localization;
 import org.schabi.newpipe.util.ServiceHelper;
 import org.schabi.newpipe.util.StateSaver;
+import org.schabi.newpipe.util.CacheDirUtils;
 import org.schabi.newpipe.util.image.ImageStrategy;
 import org.schabi.newpipe.util.image.PicassoHelper;
 import org.schabi.newpipe.util.image.PreferredImageQuality;
 import org.schabi.newpipe.util.potoken.PoTokenProviderImpl;
+import org.schabi.newpipe.util.subtitle.SubtitleDeduplicator;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -106,6 +108,9 @@ public class App extends Application {
                 .getInt(getString(R.string.last_used_preferences_version), -1);
         isFirstRun = lastUsedPrefVersion == -1;
 
+        final String appCacheDirPath =
+                CacheDirUtils.getPreferredAppCacheDirPath(this);
+
         // Initialize settings first because other initializations can use its values
         NewPipeSettings.initSettings(this);
 
@@ -132,6 +137,8 @@ public class App extends Application {
         configureRxJavaErrorHandler();
 
         YoutubeStreamExtractor.setPoTokenProvider(PoTokenProviderImpl.INSTANCE);
+
+        SubtitleDeduplicator.setCacheDirPath(appCacheDirPath);
     }
 
     @Override
