@@ -1,4 +1,4 @@
-package org.schabi.newpipe.player.domain;
+package org.schabi.newpipe.streams;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,8 +8,8 @@ import android.util.Log;
 import org.schabi.newpipe.extractor.stream.StreamInfo;
 import org.schabi.newpipe.extractor.stream.SubtitlesStream;
 import org.schabi.newpipe.extractor.MediaFormat;
-import org.schabi.newpipe.player.subtitles.SubtitleDeduplicator;
-import org.schabi.newpipe.player.subtitles.SubtitleOrigin;
+import org.schabi.newpipe.util.subtitle.SubtitleDeduplicator;
+import org.schabi.newpipe.util.subtitle.SubtitleOrigin;
 
 import java.util.ArrayList;
 import java.util.Collections;
