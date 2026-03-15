@@ -29,7 +29,7 @@ import org.schabi.newpipe.util.image.ImageStrategy;
 import org.schabi.newpipe.util.image.PicassoHelper;
 import org.schabi.newpipe.util.image.PreferredImageQuality;
 import org.schabi.newpipe.util.potoken.PoTokenProviderImpl;
-import org.schabi.newpipe.player.subtitles.SubtitleDeduplicator;
+import org.schabi.newpipe.util.subtitle.SubtitleDeduplicator;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
