@@ -2,7 +2,6 @@ package org.schabi.newpipe.player.resolver;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -135,36 +134,14 @@ public class VideoPlaybackResolver implements PlaybackResolver {
     private MediaSource buildVideoMediaSource(@NonNull final VideoStream video,
                                                @NonNull final StreamInfo info,
                                                @NonNull final MediaItemTag tag) {
-        try {
-            return PlaybackResolver.buildMediaSource(
-                    dataSource,
-                    video,
-                    info,
-                    PlaybackResolver.cacheKeyOf(info, video),
-                    tag
-            );
-        } catch (final ResolverException e) {
-            Log.e(TAG, "Unable to create video source", e);
-            return null;
-        }
+        return PlaybackResolver.buildMediaSourceSafely(dataSource, video, info, tag);
     }
 
     @Nullable
     private MediaSource buildAudioMediaSource(@NonNull final AudioStream audio,
                                                @NonNull final StreamInfo info,
                                                @NonNull final MediaItemTag tag) {
-        try {
-            return PlaybackResolver.buildMediaSource(
-                    dataSource,
-                    audio,
-                    info,
-                    PlaybackResolver.cacheKeyOf(info, audio),
-                    tag
-            );
-        } catch (final ResolverException e) {
-            Log.e(TAG, "Unable to create audio source", e);
-            return null;
-        }
+        return PlaybackResolver.buildMediaSourceSafely(dataSource, audio, info, tag);
     }
 
     private int resolveVideoIndex(@NonNull final List<VideoStream> videoStreamsList) {
