@@ -81,18 +81,10 @@ public class VideoPlaybackResolver implements PlaybackResolver {
         final List<AudioStream> audioStreamsList =
                 getFilteredAudioStreams(context, info.getAudioStreams());
 
-        final int videoIndex;
-        if (videoStreamsList.isEmpty()) {
-            videoIndex = -1;
-        } else if (playbackQuality == null) {
-            videoIndex = qualityResolver.getDefaultResolutionIndex(videoStreamsList);
-        } else {
-            videoIndex = qualityResolver.getOverrideResolutionIndex(videoStreamsList,
-                    getPlaybackQuality());
-        }
+        final int videoIndex = resolveVideoIndex(videoStreamsList);
 
-        final int audioIndex =
-                ListHelper.getAudioFormatIndex(context, audioStreamsList, audioTrack);
+        final int audioIndex = resolveAudioIndex(audioStreamsList);
+
         final MediaItemTag tag =
                 StreamInfoTag.of(info, videoStreamsList, videoIndex, audioStreamsList, audioIndex);
         @Nullable final VideoStream video = tag.getMaybeQuality()
@@ -141,6 +133,21 @@ public class VideoPlaybackResolver implements PlaybackResolver {
         } else {
             return new MergingMediaSource(true, mediaSources.toArray(new MediaSource[0]));
         }
+    }
+
+    private int resolveVideoIndex(@NonNull final List<VideoStream> videoStreamsList) {
+        if (videoStreamsList.isEmpty()) {
+            return -1;
+        } else if (playbackQuality == null) {
+            return qualityResolver.getDefaultResolutionIndex(videoStreamsList);
+        } else {
+            return qualityResolver.getOverrideResolutionIndex(
+                    videoStreamsList, getPlaybackQuality());
+        }
+    }
+
+    private int resolveAudioIndex(@NonNull final List<AudioStream> audioStreamsList) {
+        return ListHelper.getAudioFormatIndex(context, audioStreamsList, audioTrack);
     }
 
     private void appendSubtitleSources(@NonNull final StreamInfo info,
