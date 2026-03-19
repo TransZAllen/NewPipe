@@ -409,6 +409,8 @@ public interface PlaybackResolver extends Resolver<StreamInfo, MediaSource> {
             final String cacheKey = cacheKeyOf(info, stream);
             return buildMediaSource(dataSource, stream, info, cacheKey, tag);
         } catch (final ResolverException e) {
+            // By handling `ResolverException e` internally,
+            // this method can print which outer method called it.
             Log.e(TAG, "Unable to create media source for "
                     + stream.getClass().getSimpleName(), e);
             return null;
