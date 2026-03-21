@@ -95,12 +95,10 @@ public class VideoPlaybackResolver implements PlaybackResolver {
                 .orElse(null);
 
         if (video != null) {
-            try {
-                final MediaSource streamSource = PlaybackResolver.buildMediaSource(
-                        dataSource, video, info, PlaybackResolver.cacheKeyOf(info, video), tag);
-                mediaSources.add(streamSource);
-            } catch (final ResolverException e) {
-                Log.e(TAG, "Unable to create video source", e);
+            final MediaSource videoSource = buildVideoMediaSource(video, info, tag);
+            if (videoSource != null) {
+                mediaSources.add(videoSource);
+            } else {
                 return null;
             }
         }
@@ -108,15 +106,13 @@ public class VideoPlaybackResolver implements PlaybackResolver {
         // Use the audio stream if there is no video stream, or
         // merge with audio stream in case if video does not contain audio
         if (audio != null && (video == null || video.isVideoOnly() || audioTrack != null)) {
-            try {
-                final MediaSource audioSource = PlaybackResolver.buildMediaSource(
-                        dataSource, audio, info, PlaybackResolver.cacheKeyOf(info, audio), tag);
+            final MediaSource audioSource = buildAudioMediaSource(audio, info, tag);
+            if (audioSource != null) {
                 mediaSources.add(audioSource);
-                streamSourceType = SourceType.VIDEO_WITH_SEPARATED_AUDIO;
-            } catch (final ResolverException e) {
-                Log.e(TAG, "Unable to create audio source", e);
+            } else {
                 return null;
             }
+            streamSourceType = SourceType.VIDEO_WITH_SEPARATED_AUDIO;
         } else {
             streamSourceType = SourceType.VIDEO_WITH_AUDIO_OR_AUDIO_ONLY;
         }
@@ -132,6 +128,42 @@ public class VideoPlaybackResolver implements PlaybackResolver {
             return mediaSources.get(0);
         } else {
             return new MergingMediaSource(true, mediaSources.toArray(new MediaSource[0]));
+        }
+    }
+
+    @Nullable
+    private MediaSource buildVideoMediaSource(@NonNull final VideoStream video,
+                                               @NonNull final StreamInfo info,
+                                               @NonNull final MediaItemTag tag) {
+        try {
+            return PlaybackResolver.buildMediaSource(
+                    dataSource,
+                    video,
+                    info,
+                    PlaybackResolver.cacheKeyOf(info, video),
+                    tag
+            );
+        } catch (final ResolverException e) {
+            Log.e(TAG, "Unable to create video source", e);
+            return null;
+        }
+    }
+
+    @Nullable
+    private MediaSource buildAudioMediaSource(@NonNull final AudioStream audio,
+                                               @NonNull final StreamInfo info,
+                                               @NonNull final MediaItemTag tag) {
+        try {
+            return PlaybackResolver.buildMediaSource(
+                    dataSource,
+                    audio,
+                    info,
+                    PlaybackResolver.cacheKeyOf(info, audio),
+                    tag
+            );
+        } catch (final ResolverException e) {
+            Log.e(TAG, "Unable to create audio source", e);
+            return null;
         }
     }
 
