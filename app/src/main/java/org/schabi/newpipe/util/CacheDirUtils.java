@@ -22,7 +22,7 @@ public final class CacheDirUtils {
         return null;
     }
 
-    public static String getInternalAppCacheDirPath(
+    private static String getInternalAppCacheDirPath(
                                 @NonNull final Context context) {
         // always available, never be 'null'
         // /data/user/0/<package_name>/cache/
