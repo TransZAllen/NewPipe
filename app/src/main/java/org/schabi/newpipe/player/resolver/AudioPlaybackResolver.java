@@ -4,7 +4,6 @@ import static org.schabi.newpipe.util.ListHelper.getFilteredAudioStreams;
 import static org.schabi.newpipe.util.ListHelper.getPlayableStreams;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -75,13 +74,7 @@ public class AudioPlaybackResolver implements PlaybackResolver {
             }
         }
 
-        try {
-            return PlaybackResolver.buildMediaSource(
-                    dataSource, stream, info, PlaybackResolver.cacheKeyOf(info, stream), tag);
-        } catch (final ResolverException e) {
-            Log.e(TAG, "Unable to create audio source", e);
-            return null;
-        }
+        return PlaybackResolver.buildMediaSourceSafely(dataSource, stream, info, tag);
     }
 
     @Nullable
