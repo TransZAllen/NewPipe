@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.MediaItem;
@@ -396,6 +397,24 @@ public interface PlaybackResolver extends Resolver<StreamInfo, MediaSource> {
                         .setUri(manifestUri)
                         .setCustomCacheKey(cacheKey)
                         .build());
+    }
+
+    // @stream video/audio
+    @Nullable
+    static MediaSource buildMediaSourceSafely(@NonNull final PlayerDataSource dataSource,
+                                              @NonNull final Stream stream,
+                                              @NonNull final StreamInfo info,
+                                              @NonNull final MediaItemTag tag) {
+        try {
+            final String cacheKey = cacheKeyOf(info, stream);
+            return buildMediaSource(dataSource, stream, info, cacheKey, tag);
+        } catch (final ResolverException e) {
+            // By handling `ResolverException e` internally,
+            // this method can print which outer method called it.
+            Log.e(TAG, "Unable to create media source for "
+                    + stream.getClass().getSimpleName(), e);
+            return null;
+        }
     }
     //endregion
 
