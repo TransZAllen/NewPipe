@@ -29,6 +29,7 @@ import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.Youtub
 import org.schabi.newpipe.extractor.services.youtube.dashmanifestcreators.YoutubeProgressiveDashManifestCreator;
 import org.schabi.newpipe.player.datasource.NonUriHlsDataSourceFactory;
 import org.schabi.newpipe.player.datasource.YoutubeHttpDataSource;
+import org.schabi.newpipe.util.CacheDirUtils;
 
 import java.io.File;
 
@@ -207,7 +208,8 @@ public class PlayerDataSource {
 
     private static void instantiateCacheIfNeeded(final Context context) {
         if (cache == null) {
-            final File cacheDir = new File(context.getExternalCacheDir(), CACHE_FOLDER_NAME);
+            final String dirPath = CacheDirUtils.getPreferredAppCacheDirPath(context);
+            final File cacheDir = new File(dirPath, CACHE_FOLDER_NAME);
             if (DEBUG) {
                 Log.d(TAG, "instantiateCacheIfNeeded: cacheDir = " + cacheDir.getAbsolutePath());
             }
