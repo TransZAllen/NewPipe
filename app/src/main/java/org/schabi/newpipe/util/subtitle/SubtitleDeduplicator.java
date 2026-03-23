@@ -53,6 +53,12 @@ public final class SubtitleDeduplicator {
 
     private static final float BACKOFF_FACTOR = 1.0f;
 
+    // Once NewPipe/ExoPlayer supports styled subtitle rendering
+    // (e.g., colors, bold, background), set this to 'true'
+    // to preserve different styles for the same subtitle text
+    // in consecutive subtitle entries.
+    private static final boolean SUPPORT_STYLED_SUBTITLE_RENDERING = false;
+
     private static String subCacheDir = "subtitle_cache";
 
     private static File cacheDir = null;
@@ -360,6 +366,9 @@ public final class SubtitleDeduplicator {
         final String begin = matcher.group(1).trim();
         final String end = matcher.group(2).trim();
 
+        final String rawContent = matcher.group(3).trim();
+        String content = null;
+
         // Normalize subtitle text before comparison:
         // - Leading and trailing whitespace is ignored
         // - Runs of whitespace are collapsed into a single space (' ')
@@ -371,9 +380,33 @@ public final class SubtitleDeduplicator {
         // This is intentional: visually identical subtitles may differ only
         // in whitespace due to formatting or extraction differences, and
         // should be considered duplicates in such cases.
-        final String content = matcher.group(3)
-                                .trim()
-                                .replaceAll("\\s+", " ");
+        if (!SUPPORT_STYLED_SUBTITLE_RENDERING) {
+            // Purpose:
+            // Some subtitles have the same text but different style
+            // attributes (e.g., colors, bold).
+            // If NewPipe does not support styled subtitle rendering,
+            // style attributes are meaningless, so they are ignored
+            // during deduplication.
+            //
+            // Example:
+            // <p begin="00:00:11.452" end="00:00:14.388" style="s2">
+            //     <span style="s3">Magic</span>
+            // </p>
+            // <p begin="00:00:11.452" end="00:00:14.388" style="s2">
+            //     <span style="s11">Magic</span>
+            // </p>
+            // These two subtitles have the same visible text but
+            // different style attributes. They will be considered
+            // duplicates after stripping style tags.
+            final String stripStyleTags = rawContent
+                                        .replaceAll("<span[^>]*>", "")
+                                        .replaceAll("</span>", "");
+            content = stripStyleTags
+                    .replaceAll("\\s+", " ");
+        } else {
+            content = rawContent
+                    .replaceAll("\\s+", " ");
+        }
 
         final String key = begin + "|" + end + "|" + content;
         return key;
