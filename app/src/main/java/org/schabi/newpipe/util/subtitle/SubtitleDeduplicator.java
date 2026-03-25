@@ -366,20 +366,17 @@ public final class SubtitleDeduplicator {
         final String begin = matcher.group(1).trim();
         final String end = matcher.group(2).trim();
 
+        // Leading and trailing whitespace is ignored
         final String rawContent = matcher.group(3).trim();
+
         String content = null;
 
         // Normalize subtitle text before comparison:
-        // - Leading and trailing whitespace is ignored
-        // - Runs of whitespace are collapsed into a single space (' ')
         //
         // Note:
         // This operates on raw TTML text as received (before XML entity decoding).
         // XML-encoded whitespace (e.g. &#x9;) is not decoded at this stage.
         //
-        // This is intentional: visually identical subtitles may differ only
-        // in whitespace due to formatting or extraction differences, and
-        // should be considered duplicates in such cases.
         if (!SUPPORT_STYLED_SUBTITLE_RENDERING) {
             // Purpose:
             // Some subtitles have the same text but different style
@@ -401,15 +398,43 @@ public final class SubtitleDeduplicator {
             final String stripStyleTags = rawContent
                                         .replaceAll("<span[^>]*>", "")
                                         .replaceAll("</span>", "");
-            content = stripStyleTags
-                    .replaceAll("\\s+", " ");
+            content = stripStyleTags;
+            content = normalizeSubtitleContent(content);
         } else {
-            content = rawContent
-                    .replaceAll("\\s+", " ");
+            content = normalizeSubtitleContent(rawContent);
         }
 
         final String key = begin + "|" + end + "|" + content;
         return key;
+    }
+
+    private static String normalizeSubtitleContent(final String content) {
+        if (content == null) {
+            return "";
+        }
+
+        final String newContent = content
+                    // Remove invisible Unicode characters
+                    // Reason:
+                    // Two subtitle entries may look the same visually, but
+                    // they may differ in code due to invisible characters.
+                    // Removing them ensures proper detection of
+                    // duplicated subtitles.
+                    // 1) zero-width characters
+                    .replaceAll("[\\u200B\\u200C\\u200D]", "")
+                    // 2) directionality control characters
+                    .replaceAll("[\\u200E\\u200F]", "")
+
+                    // normalize non-breaking space to normal space
+                    .replace('\u00A0', ' ')
+
+                    // Runs of whitespace are collapsed into a single space (' ')
+                    // This is intentional: visually identical subtitles
+                    // may differ only in whitespace due to formatting or
+                    // extraction, and should still be considered duplicates.
+                    .replaceAll("\\s+", " ");
+
+        return newContent;
     }
 
     private static String buildLocalFileUri(final File subtitleCacheFile) {
