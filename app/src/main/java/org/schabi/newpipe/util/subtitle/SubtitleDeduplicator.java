@@ -366,8 +366,7 @@ public final class SubtitleDeduplicator {
         final String begin = matcher.group(1).trim();
         final String end = matcher.group(2).trim();
 
-        // Leading and trailing whitespace is ignored
-        final String rawContent = matcher.group(3).trim();
+        final String rawContent = matcher.group(3);
 
         String content = null;
 
@@ -432,7 +431,10 @@ public final class SubtitleDeduplicator {
                     // This is intentional: visually identical subtitles
                     // may differ only in whitespace due to formatting or
                     // extraction, and should still be considered duplicates.
-                    .replaceAll("\\s+", " ");
+                    .replaceAll("\\s+", " ")
+
+                    // Leading and trailing whitespace is ignored
+                    .trim();
 
         return newContent;
     }
