@@ -422,8 +422,9 @@ public final class SubtitleDeduplicator {
                     // Covered characters:
                     // - Zero-width spaces and related characters (U+200B to U+200D)
                     // - Directionality control characters (U+200E, U+200F)
+                    // - Directionality formatting characters (U+202A to U+202E)
                     // - Byte Order Mark (BOM, U+FEFF)
-                    .replaceAll("[\\u200B-\\u200F\\uFEFF]", "")
+                    .replaceAll("[\\u200B-\\u200F\\u202A-\\u202E\\uFEFF]", "")
 
                     // normalize non-breaking space to normal space
                     .replace('\u00A0', ' ')
