@@ -417,12 +417,13 @@ public final class SubtitleDeduplicator {
                     // Reason:
                     // Two subtitle entries may look the same visually, but
                     // they may differ in code due to invisible characters.
-                    // Removing them ensures proper detection of
-                    // duplicated subtitles.
-                    // 1) zero-width characters
-                    .replaceAll("[\\u200B\\u200C\\u200D]", "")
-                    // 2) directionality control characters
-                    .replaceAll("[\\u200E\\u200F]", "")
+                    // Removing them ensures proper detection of duplicated
+                    // subtitles.
+                    // Covered characters:
+                    // - Zero-width spaces and related characters (U+200B to U+200D)
+                    // - Directionality control characters (U+200E, U+200F)
+                    // - Byte Order Mark (BOM, U+FEFF)
+                    .replaceAll("[\\u200B-\\u200F\\uFEFF]", "")
 
                     // normalize non-breaking space to normal space
                     .replace('\u00A0', ' ')
