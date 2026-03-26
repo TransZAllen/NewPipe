@@ -412,7 +412,7 @@ public final class SubtitleDeduplicator {
             return "";
         }
 
-        final String newContent = content
+        final String normalized = content
                     // Remove invisible Unicode characters
                     // Reason:
                     // Two subtitle entries may look the same visually, but
@@ -438,7 +438,7 @@ public final class SubtitleDeduplicator {
                     // Leading and trailing whitespace is ignored
                     .trim();
 
-        return newContent;
+        return normalized;
     }
 
     private static String buildLocalFileUri(final File subtitleCacheFile) {
