@@ -367,12 +367,15 @@ public final class SubtitleDeduplicator {
     }
 
     /**
-     * Generates a deduplication key for one TTML <p> paragraph.
+     * Generates a deduplication key for one TTML {@code <p>} paragraph.
      *
-     * @param matcher Matcher already positioned on a single <p> element.
+     * @param matcher Matcher already positioned on a single {@code <p>} element.
      *                group(1) = begin time
      *                group(2) = end time
-     *                group(3) = raw textual content (may contain <span>)
+     *                group(3) = raw textual content (may contain 'span' tags)
+     * @return a deduplication key composed of begin/end timestamps
+     *         and normalized text, used to detect whether this subtitle entry
+     *         has already been processed.
      */
     private static String buildDeduplicationKey(final Matcher matcher) {
         final String begin = matcher.group(1).trim();
