@@ -264,14 +264,14 @@ public final class SubtitleDeduplicator {
 
         final Matcher matcher = getTtmlMatcher(ttmlFileContent);
 
-        final Set<String> seen = new HashSet<>();
+        final Set<String> processedKeys = new HashSet<>();
         while (matcher.find()) {
             final String key = buildDeduplicationKey(matcher);
 
-            if (seen.contains(key)) {
+            if (processedKeys.contains(key)) {
                 return true;
             }
-            seen.add(key);
+            processedKeys.add(key);
         }
 
         return false;
@@ -318,7 +318,7 @@ public final class SubtitleDeduplicator {
 
         final Matcher matcher = getTtmlMatcher(ttmlFileContent);
 
-        final Set<String> seen = new HashSet<>();
+        final Set<String> processedKeys = new HashSet<>();
         final StringBuilder result = new StringBuilder();
 
         int lastIndex = 0;
@@ -327,12 +327,12 @@ public final class SubtitleDeduplicator {
 
             final String key = buildDeduplicationKey(matcher);
 
-            if (!seen.contains(key)) {
+            if (!processedKeys.contains(key)) {
                 // Append the ORIGINAL full <p> paragraph.
                 // - This preserves the author's original intent
                 //   (runs of whitespace, <br>, etc.).
                 result.append(matcher.group(0));
-                seen.add(key);
+                processedKeys.add(key);
             }
 
             lastIndex = matcher.end();
