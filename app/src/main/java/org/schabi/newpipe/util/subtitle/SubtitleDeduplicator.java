@@ -257,12 +257,12 @@ public final class SubtitleDeduplicator {
     // using the same normalized (whitespace-trimmed) comparison rules
     // as deduplicateContent().
     // Note: entry == paragraph
-    public static boolean containsDuplicatedEntries(final String subtitleContent) {
-        if (stringIsNullOrEmpty(subtitleContent)) {
+    public static boolean containsDuplicatedEntries(final String ttmlFileContent) {
+        if (stringIsNullOrEmpty(ttmlFileContent)) {
             return false;
         }
 
-        final Matcher matcher = getTtmlMatcher(subtitleContent);
+        final Matcher matcher = getTtmlMatcher(ttmlFileContent);
 
         final Set<String> seen = new HashSet<>();
         while (matcher.find()) {
@@ -302,7 +302,7 @@ public final class SubtitleDeduplicator {
         }
     }
 
-    public static String deduplicateContent(final String subtitleContent) {
+    public static String deduplicateContent(final String ttmlFileContent) {
         // Subtitle entries/paragraphs are considered duplicated only if:
         // 1) begin timestamp is exactly the same,
         // 2) end timestamp is exactly the same,
@@ -312,18 +312,18 @@ public final class SubtitleDeduplicator {
         // This is a normalized comparison (trimmed and whitespace-normalized).
         // No semantic analysis or fuzzy matching is performed.
 
-        if (stringIsNullOrEmpty(subtitleContent)) {
-            return subtitleContent;
+        if (stringIsNullOrEmpty(ttmlFileContent)) {
+            return ttmlFileContent;
         }
 
-        final Matcher matcher = getTtmlMatcher(subtitleContent);
+        final Matcher matcher = getTtmlMatcher(ttmlFileContent);
 
         final Set<String> seen = new HashSet<>();
         final StringBuilder result = new StringBuilder();
 
         int lastIndex = 0;
         while (matcher.find()) {
-            result.append(subtitleContent, lastIndex, matcher.start());
+            result.append(ttmlFileContent, lastIndex, matcher.start());
 
             final String key = buildDeduplicationKey(matcher);
 
@@ -338,7 +338,7 @@ public final class SubtitleDeduplicator {
             lastIndex = matcher.end();
         }
 
-        result.append(subtitleContent.substring(lastIndex));
+        result.append(ttmlFileContent.substring(lastIndex));
         return result.toString();
     }
 
