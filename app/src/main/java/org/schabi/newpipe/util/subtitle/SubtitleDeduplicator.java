@@ -266,7 +266,7 @@ public final class SubtitleDeduplicator {
 
         final Set<String> seen = new HashSet<>();
         while (matcher.find()) {
-            final String key = getSubtitleKeyOfTtml(matcher);
+            final String key = buildDeduplicationKey(matcher);
 
             if (seen.contains(key)) {
                 return true;
@@ -325,7 +325,7 @@ public final class SubtitleDeduplicator {
         while (matcher.find()) {
             result.append(subtitleContent, lastIndex, matcher.start());
 
-            final String key = getSubtitleKeyOfTtml(matcher);
+            final String key = buildDeduplicationKey(matcher);
 
             if (!seen.contains(key)) {
                 // Append the ORIGINAL full <p> paragraph.
@@ -374,7 +374,7 @@ public final class SubtitleDeduplicator {
      *                group(2) = end time
      *                group(3) = raw textual content (may contain <span>)
      */
-    private static String getSubtitleKeyOfTtml(final Matcher matcher) {
+    private static String buildDeduplicationKey(final Matcher matcher) {
         final String begin = matcher.group(1).trim();
         final String end = matcher.group(2).trim();
 
