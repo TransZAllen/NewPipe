@@ -328,6 +328,9 @@ public final class SubtitleDeduplicator {
             final String key = getSubtitleKeyOfTtml(matcher);
 
             if (!seen.contains(key)) {
+                // Append the ORIGINAL full <p> paragraph.
+                // - This preserves the author's original intent
+                //   (runs of whitespace, <br>, etc.).
                 result.append(matcher.group(0));
                 seen.add(key);
             }
@@ -363,6 +366,14 @@ public final class SubtitleDeduplicator {
         return pattern.matcher(subtitleContent);
     }
 
+    /**
+     * Generates a deduplication key for one TTML <p> paragraph.
+     *
+     * @param matcher Matcher already positioned on a single <p> element.
+     *                group(1) = begin time
+     *                group(2) = end time
+     *                group(3) = raw textual content (may contain <span>)
+     */
     private static String getSubtitleKeyOfTtml(final Matcher matcher) {
         final String begin = matcher.group(1).trim();
         final String end = matcher.group(2).trim();
