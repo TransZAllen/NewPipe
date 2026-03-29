@@ -538,9 +538,7 @@ public final class SubtitleDeduplicator {
     }
 
     private static String getLanguageCode(final String remoteSubtitleUrl) {
-        String languageCode = null;
-        languageCode = YoutubeParsingHelper.extractLanguageCode(remoteSubtitleUrl);
-        return languageCode;
+        return YoutubeParsingHelper.extractLanguageCode(remoteSubtitleUrl);
     }
 
     private static String getAutoTranslateLanguage(final String remoteSubtitleUrl) {
