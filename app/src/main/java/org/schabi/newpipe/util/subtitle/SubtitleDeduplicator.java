@@ -256,6 +256,7 @@ public final class SubtitleDeduplicator {
     // Detects whether the subtitle contains duplicated <p> entries
     // using the same normalized (whitespace-trimmed) comparison rules
     // as deduplicateContent().
+    // Note: entry == paragraph
     public static boolean containsDuplicatedEntries(final String subtitleContent) {
         if (stringIsNullOrEmpty(subtitleContent)) {
             return false;
@@ -302,7 +303,7 @@ public final class SubtitleDeduplicator {
     }
 
     public static String deduplicateContent(final String subtitleContent) {
-        // Subtitle entries are considered duplicated only if:
+        // Subtitle entries/paragraphs are considered duplicated only if:
         // 1) begin timestamp is exactly the same,
         // 2) end timestamp is exactly the same,
         // 3) subtitle text content is the same
@@ -366,10 +367,11 @@ public final class SubtitleDeduplicator {
         final String begin = matcher.group(1).trim();
         final String end = matcher.group(2).trim();
 
-        final String rawContent = matcher.group(3);
+        // Textual content units inside the <p> element.
+        // It may contain <span style="..."> tags/attributes.
+        final String rawTextualContent = matcher.group(3);
 
-        String content = null;
-
+        String textContent = null;
         // Normalize subtitle text before comparison:
         //
         // Note:
@@ -394,25 +396,32 @@ public final class SubtitleDeduplicator {
             // These two subtitles have the same visible text but
             // different style attributes. They will be considered
             // duplicates after stripping style tags.
-            final String stripStyleTags = rawContent
-                                        .replaceAll("<span[^>]*>", "")
-                                        .replaceAll("</span>", "");
-            content = stripStyleTags;
-            content = normalizeSubtitleContent(content);
+            //
+            // Note:
+            // It may still contain <br> tags, which we intentionally
+            // keep for semantic meaning.
+            final String textWithoutStyles = stripStyleTags(rawTextualContent);
+            textContent = normalizeParagraphText(textWithoutStyles);
         } else {
-            content = normalizeSubtitleContent(rawContent);
+            textContent = normalizeParagraphText(rawTextualContent);
         }
 
-        final String key = begin + "|" + end + "|" + content;
+        final String key = begin + "|" + end + "|" + textContent;
         return key;
     }
 
-    private static String normalizeSubtitleContent(final String content) {
-        if (content == null) {
+    private static String stripStyleTags(final String textualContent) {
+        return textualContent
+                .replaceAll("<span[^>]*>", "")
+                .replaceAll("</span>", "");
+    }
+
+    private static String normalizeParagraphText(final String textContent) {
+        if (textContent == null) {
             return "";
         }
 
-        final String normalized = content
+        final String normalized = textContent
                     // Remove invisible Unicode characters
                     // Reason:
                     // Two subtitle entries may look the same visually, but
