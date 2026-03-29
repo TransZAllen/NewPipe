@@ -136,7 +136,7 @@ public final class SubtitleDeduplicator {
                                              currentSubtitleOrigin,
                                              currentSubtitleState);
 
-        final String localSubtitleUri = storeItToCacheDir(finalContent,
+        final String localSubtitleUri = writeContentToCacheFile(finalContent,
                                              format,
                                              currentSubtitleOrigin,
                                              currentCacheFile);
@@ -470,7 +470,7 @@ public final class SubtitleDeduplicator {
         return path;
     }
 
-    private static String storeItToCacheDir(final String subtitleContent,
+    private static String writeContentToCacheFile(final String subtitleContent,
                                             final MediaFormat format,
                                             final SubtitleOrigin currentSubtitleOrigin,
                                             final File currentCacheFile) {
