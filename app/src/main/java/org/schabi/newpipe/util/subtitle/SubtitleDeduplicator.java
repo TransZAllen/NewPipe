@@ -480,7 +480,7 @@ public final class SubtitleDeduplicator {
             return null;
         }
 
-        if (null == writeDeduplicatedContentToCachefile(subtitleContent, currentCacheFile)) {
+        if (null == writeContentToFile(subtitleContent, currentCacheFile)) {
             return cacheFilePathForExoplayer;
         } else {
             Log.e(TAG, "Failed to write cache file: " + currentCacheFile.getAbsolutePath());
@@ -663,12 +663,6 @@ public final class SubtitleDeduplicator {
             final boolean result = parentDir.mkdirs();
             return result;
         }
-    }
-
-    private static String writeDeduplicatedContentToCachefile(
-                                            final String subtitleContent,
-                                            final File tempCacheFile) {
-        return writeContentToFile(subtitleContent, tempCacheFile);
     }
 
     private static String writeContentToFile(final String content,
