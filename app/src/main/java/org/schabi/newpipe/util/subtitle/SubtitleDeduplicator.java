@@ -474,18 +474,16 @@ public final class SubtitleDeduplicator {
                                             final MediaFormat format,
                                             final SubtitleOrigin currentSubtitleOrigin,
                                             final File currentCacheFile) {
-        final File cacheFile = currentCacheFile;
+        final String cacheFilePathForExoplayer = buildLocalFileUri(currentCacheFile);
 
-        final String cacheFilePathForExoplayer = buildLocalFileUri(cacheFile);
-
-        if (!ensureItsParentDirExist(cacheFile)) {
+        if (!ensureItsParentDirExist(currentCacheFile)) {
             return null;
         }
 
-        if (null == writeDeduplicatedContentToCachefile(subtitleContent, cacheFile)) {
+        if (null == writeDeduplicatedContentToCachefile(subtitleContent, currentCacheFile)) {
             return cacheFilePathForExoplayer;
         } else {
-            Log.e(TAG, "Failed to write cache file: " + cacheFile.getAbsolutePath());
+            Log.e(TAG, "Failed to write cache file: " + currentCacheFile.getAbsolutePath());
             return null;
         }
     }
