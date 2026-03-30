@@ -266,12 +266,12 @@ public final class SubtitleDeduplicator {
 
         final Set<String> processedKeys = new HashSet<>();
         while (matcher.find()) {
-            final String key = buildDeduplicationKey(matcher);
+            final String currentParagraphKey = buildDeduplicationKey(matcher);
 
-            if (processedKeys.contains(key)) {
+            if (processedKeys.contains(currentParagraphKey)) {
                 return true;
             }
-            processedKeys.add(key);
+            processedKeys.add(currentParagraphKey);
         }
 
         return false;
@@ -316,29 +316,46 @@ public final class SubtitleDeduplicator {
             return ttmlFileContent;
         }
 
-        final Matcher matcher = getTtmlMatcher(ttmlFileContent);
-
         final Set<String> processedKeys = new HashSet<>();
         final StringBuilder result = new StringBuilder();
 
-        int lastIndex = 0;
+        // Create a matcher for all <p>...</p> entries
+        final Matcher matcher = getTtmlMatcher(ttmlFileContent);
+
+        // Keep track of the end index of the last processed <p>
+        int lastParagraphEndIndex = 0;
+
         while (matcher.find()) {
-            result.append(ttmlFileContent, lastIndex, matcher.start());
+            // Extract the gap between the previous <p> and the current <p>
+            // - it may contain whitespace, newlines, or other XML elements.
+            // - it is NOT part of the subtitle paragraph.
+            // - It is never used for deduplication or screen display.
+            final String gapBetweenParagraphs = ttmlFileContent.substring(
+                                                        lastParagraphEndIndex,
+                                                        matcher.start()
+                                                    );
+            result.append(gapBetweenParagraphs);
 
-            final String key = buildDeduplicationKey(matcher);
+            final String currentParagraph = matcher.group(0);
+            final String currentParagraphKey = buildDeduplicationKey(matcher);
 
-            if (!processedKeys.contains(key)) {
+            if (!processedKeys.contains(currentParagraphKey)) {
                 // Append the ORIGINAL full <p> paragraph.
-                // - This preserves the author's original intent
+                // - This preserves the author's original formatting
                 //   (runs of whitespace, <br>, etc.).
-                result.append(matcher.group(0));
-                processedKeys.add(key);
+                result.append(currentParagraph);
+                processedKeys.add(currentParagraphKey);
             }
 
-            lastIndex = matcher.end();
+            // Move the last processed index to the end of the current <p>
+            lastParagraphEndIndex = matcher.end();
         }
 
-        result.append(ttmlFileContent.substring(lastIndex));
+        // Append any remaining content after the last <p>.
+        // - Usually contains closing tags like </div>, </body>, </tt>.
+        final String trailingContent = ttmlFileContent.substring(lastParagraphEndIndex);
+        result.append(trailingContent);
+
         return result.toString();
     }
 
