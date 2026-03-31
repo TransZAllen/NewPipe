@@ -59,7 +59,7 @@ public final class SubtitleDeduplicator {
     // in consecutive subtitle entries.
     private static final boolean SUPPORT_STYLED_SUBTITLE_RENDERING = false;
 
-    private static String subCacheDir = "subtitle_cache";
+    private static final String SUBTITLE_DEDUP_CACHE_DIR = "subtitle_cache";
 
     private static File cacheDir = null;
 
@@ -67,13 +67,14 @@ public final class SubtitleDeduplicator {
         // no instance
     }
 
-    // cacheDir is /storage/emulated/0/Android/data/<package_name>/cache/{subCacheDir}
+    // cacheDir is /storage/emulated/0/Android/data/<package_name>/
+    //              cache/{SUBTITLE_DEDUP_CACHE_DIR}
     public static void setCacheDirPath(final String path) {
         if (stringIsNullOrEmpty(path)) {
             return;
         }
 
-        cacheDir = new File(path, subCacheDir);
+        cacheDir = new File(path, SUBTITLE_DEDUP_CACHE_DIR);
 
         createDirIfNotExist(cacheDir);
     }
