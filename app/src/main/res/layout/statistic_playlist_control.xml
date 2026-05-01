@@ -48,7 +48,7 @@
         android:layout_alignParentEnd="true"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_search"
-        android:contentDescription="@string/enable_search_history_title"/>
+        android:contentDescription="@string/search_history"/>
 
     </RelativeLayout>
 
