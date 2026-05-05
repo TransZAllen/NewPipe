@@ -72,10 +72,13 @@
         android:background="?attr/windowBackground"
         android:layout_gravity="top">
 
+        <!-- Use default cursor so its color follows textColor
+             (theme-driven, no hardcoded color) -->
         <org.schabi.newpipe.views.NewPipeEditText
             android:id="@+id/history_search_input"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textCursorDrawable="@null"
             android:hint="@string/search_history"
             android:imeOptions="actionSearch|flagNoFullscreen"
             android:inputType="textFilter|textNoSuggestions"
