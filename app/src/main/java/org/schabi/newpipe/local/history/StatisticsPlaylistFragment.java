@@ -160,6 +160,14 @@ public class StatisticsPlaylistFragment
             }
         });
 
+        initHistorySearchOverlayActions();
+
+        initHistorySearchInputActions();
+
+        initHistorySearchClearActions();
+    }
+
+    private void initHistorySearchOverlayActions() {
         // Show search overlay
         headerBinding.searchButton.setOnClickListener(view -> {
             if (headerBinding.historySearchBar.getVisibility() == View.GONE) {
@@ -176,14 +184,6 @@ public class StatisticsPlaylistFragment
                     );
             }
         });
-
-        initHistorySearchInputActions();
-
-        // Clear input & hide search overlay
-        headerBinding.historySearchClearIcon.setOnClickListener(view -> {
-            headerBinding.historySearchInput.setText("");
-            headerBinding.historySearchBar.setVisibility(View.GONE);
-        });
     }
 
     private void initHistorySearchInputActions() {
@@ -199,6 +199,14 @@ public class StatisticsPlaylistFragment
                 return true;
             }
             return false;
+        });
+    }
+
+    private void initHistorySearchClearActions() {
+        // Clear input & hide search overlay
+        headerBinding.historySearchClearIcon.setOnClickListener(view -> {
+            headerBinding.historySearchInput.setText("");
+            headerBinding.historySearchBar.setVisibility(View.GONE);
         });
     }
 
