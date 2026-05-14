@@ -255,13 +255,28 @@ public class StatisticsPlaylistFragment
 
         for (final StreamStatisticsEntry historyEntry : allHistoryEntries) {
             final String title = historyEntry.getStreamEntity().getTitle();
+            final String uploader = historyEntry.getStreamEntity().getUploader();
+
+            boolean matches = false;
 
             if (null != title) {
                 final String lowerTitle = title.toLowerCase(Locale.ROOT);
 
                 if (lowerTitle.contains(lowerQuery)) {
-                    filtered.add(historyEntry);
+                    matches = true;
                 }
+            }
+
+            if (null != uploader) {
+                final String lowerUploader = uploader.toLowerCase(Locale.ROOT);
+
+                if (lowerUploader.contains(lowerQuery)) {
+                    matches = true;
+                }
+            }
+
+            if (matches) {
+                filtered.add(historyEntry);
             }
         }
 
