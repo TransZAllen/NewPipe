@@ -254,33 +254,33 @@ public class StatisticsPlaylistFragment
         final String lowerQuery = query.toLowerCase(Locale.ROOT);
 
         for (final StreamStatisticsEntry historyEntry : allHistoryEntries) {
-            final String title = historyEntry.getStreamEntity().getTitle();
-            final String uploader = historyEntry.getStreamEntity().getUploader();
-
-            boolean matches = false;
-
-            if (null != title) {
-                final String lowerTitle = title.toLowerCase(Locale.ROOT);
-
-                if (lowerTitle.contains(lowerQuery)) {
-                    matches = true;
-                }
-            }
-
-            if (null != uploader) {
-                final String lowerUploader = uploader.toLowerCase(Locale.ROOT);
-
-                if (lowerUploader.contains(lowerQuery)) {
-                    matches = true;
-                }
-            }
-
-            if (matches) {
+            if (matchesHistoryEntry(historyEntry, lowerQuery)) {
                 filtered.add(historyEntry);
             }
         }
 
         itemListAdapter.addItems(processResult(filtered));
+    }
+
+    private boolean matchesHistoryEntry(final StreamStatisticsEntry historyEntry,
+                                        final String lowerQuery) {
+        final String title = historyEntry.getStreamEntity().getTitle();
+        if (null != title) {
+            final String lowerTitle = title.toLowerCase(Locale.ROOT);
+            if (lowerTitle.contains(lowerQuery)) {
+                return true;
+            }
+        }
+
+        final String uploader = historyEntry.getStreamEntity().getUploader();
+        if (null != uploader) {
+            final String lowerUploader = uploader.toLowerCase(Locale.ROOT);
+            if (lowerUploader.contains(lowerQuery)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
