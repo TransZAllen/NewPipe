@@ -1456,7 +1456,9 @@ public final class Player implements PlaybackListener, Listener {
                 // When player is in single repeat mode and a period transition occurs,
                 // we need to register a view count here since no metadata has changed
                 if (getRepeatMode() == REPEAT_MODE_ONE && newIndex == playQueue.getIndex()) {
-                    registerStreamViewed();
+                    // Automatic repeat in REPEAT_MODE_ONE mode does not count as a new view.
+                    // Note: Its counting rule differs from manual replay.
+                    // registerStreamViewed();
                     break;
                 }
             case DISCONTINUITY_REASON_SEEK:
